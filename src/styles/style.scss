@@ -23,12 +23,13 @@ body {
     &__face {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top right, #286F62, #4DD5BC);
+        background: url('../assets/background-image.png') center / 60% no-repeat,
+        linear-gradient(to top right, #286F62, #4DD5BC);
         backface-visibility: hidden;
 
         &--back {
             transform: rotateY(180deg);
-            background-color: #E8F3F0;
+            background: #E8F3F0;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -36,8 +37,8 @@ body {
     }
 
     &__face svg {
-        width: 80%;
-        height: 80%;
+        width: 70%;
+        height: 70%;
     }
 
     &.is-flipped .card__inner {
