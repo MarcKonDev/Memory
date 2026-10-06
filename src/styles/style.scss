@@ -23,18 +23,21 @@ body {
     &__face {
         position: absolute;
         inset: 0;
-        background-color: black;
+        background: linear-gradient(to top right, #286F62, #4DD5BC);
         backface-visibility: hidden;
 
         &--back {
             transform: rotateY(180deg);
-            background-color: red;
+            background-color: #E8F3F0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 
     &__face svg {
-        width: 100%;
-        height: 100%;
+        width: 80%;
+        height: 80%;
     }
 
     &.is-flipped .card__inner {
