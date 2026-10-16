@@ -1,23 +1,28 @@
 import './styles/style.scss';
 import { createBoard } from './card';
 import { createCardsHTML } from './card_template';
-import { GameState } from './game_state'
+import { GameState } from './game_state';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
     pointsPlayer2: 0,
     activePlayer: 1,
     openCards: [],
-    gameField: createBoard(8)
+    gameField: createBoard(18)
 }
 
 const fieldRef = document.querySelector('#field');
+const playerOneHeader = document.querySelector('.header__points--player1');
+const playerTwoHeader = document.querySelector('.header__points--player2')
 
 init();
 
 function init() {
     renderBoard();
     setupClickHandler();
+    setFieldSize();
+    renderScores();
+    renderActivePlayer()
 }
 
 function renderBoard() {
@@ -51,6 +56,7 @@ function checkOpenCards() {
             gameState.openCards[0].found = true;
             gameState.openCards[1].found = true;
             setPoints();
+            renderScores();
             if (isGameOver()) {
                 showEndScreen();
             }
@@ -59,6 +65,7 @@ function checkOpenCards() {
             setTimeout(() => {
                 cleanOpenCards();
                 gameState.activePlayer = gameState.activePlayer === 1 ? 2 : 1;
+                renderActivePlayer();
             }, 1000);
         }
     }
@@ -106,4 +113,28 @@ function isGameOver(): boolean {
         }
     }
     return true;
+}
+
+function setFieldSize() {
+    const cardCount = gameState.gameField.length;
+    fieldRef?.classList.add(`field--${cardCount}`);
+}
+
+
+function renderScores() {
+    if (playerOneHeader) {
+        const pointsP1 = gameState.pointsPlayer1
+        playerOneHeader.textContent = `${pointsP1}`
+    }
+    if (playerTwoHeader) {
+        const pointsP2 = gameState.pointsPlayer2
+        playerTwoHeader.textContent = `${pointsP2}`
+    }
+}
+
+function renderActivePlayer() {
+    const activePlayer = gameState.activePlayer;
+    const markerarea = document.querySelector('.header__marker');
+    markerarea?.classList.toggle("header__marker--player1", activePlayer === 1);
+    markerarea?.classList.toggle("header__marker--player2", activePlayer === 2);
 }
