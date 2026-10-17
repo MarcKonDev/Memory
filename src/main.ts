@@ -2,6 +2,7 @@ import './styles/style.scss';
 import { createBoard } from './card';
 import { createCardsHTML } from './card_template';
 import { GameState } from './game_state';
+import {showScreen} from './screens';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
@@ -12,8 +13,9 @@ const gameState: GameState = {
 }
 
 const fieldRef = document.querySelector('#field');
-const playerOneHeader = document.querySelector('.scoreboard__points--player1');
-const playerTwoHeader = document.querySelector('.scoreboard__points--player2')
+const playerOnePoints = document.querySelectorAll('.scoreboard__points--player1');
+const playerTwoPoints = document.querySelectorAll('.scoreboard__points--player2');
+const GAME_OVER_DELAY_MS = 2400;
 
 init();
 
@@ -22,7 +24,8 @@ function init() {
     setupClickHandler();
     setFieldSize();
     renderScores();
-    renderActivePlayer()
+    renderActivePlayer();
+    showScreen("game")
 }
 
 function renderBoard() {
@@ -79,13 +82,16 @@ function setPoints() {
     }
 }
 
-function showEndScreen() {
-    if (gameState.pointsPlayer1 > gameState.pointsPlayer2) {
-        console.log("Spieler 1 hat gewonnen");
-    } else if (gameState.pointsPlayer2 > gameState.pointsPlayer1) {
-        console.log("Spieler 2 hat gewonnen");
+function showEndScreen(): void {
+    showScreen("game-over");
+    setTimeout(showResultScreen, GAME_OVER_DELAY_MS);
+}
+
+function showResultScreen(): void {
+    if (gameState.pointsPlayer1 === gameState.pointsPlayer2) {
+        showScreen("draw");
     } else {
-        console.log("Unentschieden")
+        showScreen("winner");
     }
 }
 
@@ -122,13 +128,14 @@ function setFieldSize() {
 
 
 function renderScores() {
-    if (playerOneHeader) {
+    for(const playerOnePoint of playerOnePoints){
         const pointsP1 = gameState.pointsPlayer1
-        playerOneHeader.textContent = `${pointsP1}`
+        playerOnePoint.textContent = `${pointsP1}`
     }
-    if (playerTwoHeader) {
+
+    for(const playerTwoPoint of playerTwoPoints){
         const pointsP2 = gameState.pointsPlayer2
-        playerTwoHeader.textContent = `${pointsP2}`
+        playerTwoPoint.textContent = `${pointsP2}`
     }
 }
 
