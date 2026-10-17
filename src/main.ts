@@ -12,8 +12,8 @@ const gameState: GameState = {
 }
 
 const fieldRef = document.querySelector('#field');
-const playerOneHeader = document.querySelector('.header__points--player1');
-const playerTwoHeader = document.querySelector('.header__points--player2')
+const playerOneHeader = document.querySelector('.scoreboard__points--player1');
+const playerTwoHeader = document.querySelector('.scoreboard__points--player2')
 
 init();
 
