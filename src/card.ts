@@ -1,6 +1,4 @@
 import {shuffle} from './shuffle'
-import {svgLogos} from './assets/svgs';
-
 
 export interface Card {
     image: string,
@@ -8,15 +6,15 @@ export interface Card {
     found: boolean
 }
 
-export function createBoard(amount: number):Card[] {
+export function createBoard(amount: number, images: string[]):Card[] {
     const boardCards: Card[] = [];
     for (let i = 0; i < amount; i++) {
         boardCards.push({
-            image: svgLogos[i],
+            image: images[i],
             hidden: true,
             found: false
         }, {
-            image: svgLogos[i],
+            image: images[i],
             hidden: true,
             found: false
         });

@@ -1,0 +1,288 @@
+@use '../abstracts/variables' as *;
+
+$food-font-title: 'Klee One', Arial, Helvetica, sans-serif;
+$food-font-text: 'Delius Unicase', Arial, Helvetica, sans-serif;
+$food-pawn: url('../../assets/images/food/pawn.svg');
+
+// Die Selektoren beginnen mit body[data-theme], damit sie die Basis-Styles
+// sicher überschreiben, egal in welcher Reihenfolge das CSS ausgegeben wird.
+body[data-theme='foods'] {
+    background-color: $white;
+    font-family: $food-font-text;
+
+    // Spielfeld und Karten
+    .field--16 {
+        grid-template-columns: repeat(4, 122px);
+    }
+
+    .field--24,
+    .field--36 {
+        grid-template-columns: repeat(6, 122px);
+    }
+
+    .card {
+        height: 122px;
+    }
+
+    .card__face {
+        background: url('../../assets/images/food/cover-icon.png') center / 60px 48px no-repeat, $food-orange;
+    }
+
+    .card__face--back {
+        background: $food-card-back;
+    }
+
+    .card__face svg {
+        width: 80px;
+        height: 80px;
+    }
+
+    // Header
+    .header__container {
+        box-sizing: border-box;
+        padding: 24px;
+        background-color: $food-beige;
+        border-radius: 10px;
+        color: $food-brown;
+    }
+
+    .header__current-player {
+        gap: 10px;
+        font-family: $food-font-title;
+        font-size: 32px;
+        font-weight: 600;
+        line-height: normal;
+    }
+
+    .header__marker {
+        width: 41px;
+        height: 40px;
+        border-radius: 8px;
+        background-color: currentColor;
+        background-image: $food-pawn;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 25px 32px;
+
+        path {
+            fill: transparent;
+        }
+    }
+
+    .header__marker--player1 {
+        color: $food-player1;
+    }
+
+    .header__marker--player2 {
+        color: $food-player2;
+    }
+
+    // Scoreboard (Spiel und Game over)
+    .scoreboard {
+        width: auto;
+        height: 54px;
+        padding: 0 16px;
+        gap: 40px;
+        background-color: $white;
+        border-radius: 10px;
+        font-size: 30px;
+        font-weight: 700;
+    }
+
+    .scoreboard__player {
+        gap: 4px;
+    }
+
+    .scoreboard__player--player1 {
+        color: $food-player1;
+    }
+
+    .scoreboard__player--player2 {
+        order: -1;
+        color: $food-player2;
+    }
+
+    .scoreboard__player p,
+    .scoreboard__icon {
+        display: none;
+    }
+
+    .scoreboard__player::before {
+        content: '';
+        width: 20px;
+        height: 25px;
+        background-color: currentColor;
+        -webkit-mask: $food-pawn center / contain no-repeat;
+        mask: $food-pawn center / contain no-repeat;
+    }
+
+    // Buttons
+    .button {
+        gap: 10px;
+        padding: 12px 20px;
+        width: auto;
+        height: auto;
+        background-color: $food-cream;
+        border: 3px solid $food-orange;
+        border-radius: 10px;
+        color: $food-orange;
+        font-size: 16px;
+        font-weight: 700;
+
+        &:hover {
+            border: 3px solid $food-orange;
+            background-color: $food-orange;
+            color: $white;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+    }
+
+    .button--secondary,
+    .button--secondary:hover {
+        padding: 12px 20px;
+        background-color: $food-orange;
+        border: 3px solid $food-orange;
+        color: $white;
+        box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .button--filled {
+        width: auto;
+        height: auto;
+        background-color: $food-orange-light;
+        color: $white;
+        font-size: 16px;
+    }
+
+    .button--filled:hover {
+        background-color: $food-orange;
+    }
+
+    .exit-popup__exit {
+        width: auto;
+        height: auto;
+        font-size: 16px;
+    }
+
+    // Game over
+    .game-over {
+        background-color: $food-orange;
+    }
+
+    .game-over__image {
+        display: none;
+    }
+
+    .game-over__title::after {
+        content: 'GAME OVER';
+        color: $white;
+        font-family: $food-font-title;
+        font-size: 130px;
+        font-weight: 600;
+        line-height: normal;
+        text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    }
+
+    .game-over__label {
+        margin-top: 104px;
+        margin-bottom: 8px;
+        font-family: $food-font-title;
+        font-size: 42px;
+        font-weight: 600;
+    }
+
+    .game-over .scoreboard {
+        width: 220px;
+        height: 76px;
+        font-family: 'Red Rose', Arial, Helvetica, sans-serif;
+        font-size: 40px;
+    }
+
+    .game-over .scoreboard__player::before {
+        width: 27px;
+        height: 33px;
+    }
+
+    // Winner und Draw
+    .winner,
+    .draw {
+        background-color: $food-grey;
+        font-family: $food-font-title;
+    }
+
+    .winner {
+        justify-content: center;
+    }
+
+    .winner__confetti {
+        display: none;
+    }
+
+    .winner__label {
+        color: $food-brown;
+        font-weight: 400;
+    }
+
+    .winner__title {
+        font-size: 80px;
+        font-weight: 600;
+        line-height: normal;
+        text-transform: none;
+    }
+
+    .winner__title--player1,
+    .winner__title--player2 {
+        color: $food-brown;
+    }
+
+    .winner__icon,
+    .draw__icon {
+        padding: 24px 30px;
+        background-color: $food-tile;
+        box-shadow: 3px 3px 6px 0 rgba(0, 0, 0, 0.25);
+    }
+
+    .draw__icon {
+        padding: 32px 19px;
+        margin: 10px 0 64px;
+    }
+
+    .draw__label {
+        color: $food-orange;
+        font-size: 40px;
+        font-weight: 600;
+    }
+
+    .draw__img {
+        display: none;
+    }
+
+    .draw__title::after {
+        content: 'DRAW';
+        color: $food-orange;
+        font-size: 128px;
+        font-weight: 600;
+        line-height: normal;
+    }
+
+    // Exit-Popup
+    .exit-popup {
+        border-radius: 20px;
+        background-color: $food-grey;
+        color: $food-brown;
+    }
+
+    .exit-popup[open] {
+        gap: 40px;
+    }
+
+    .exit-popup__title {
+        max-width: 376px;
+        font-family: $food-font-title;
+        font-size: 28px;
+    }
+
+    .exit-popup__actions {
+        gap: 10px;
+    }
+}

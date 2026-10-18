@@ -1,6 +1,7 @@
 @use 'abstracts/variables' as*;
 @use 'base/typography';
 @use 'base/reset';
+@use 'themes/foods';
 
 body {
     font-family: 'Red Rose', Arial, Helvetica, sans-serif;
@@ -358,10 +359,6 @@ body {
 
 }
 
-.is-hidden {
-    display: none;
-}
-
 .settings {
     display: flex;
     justify-content: center;
@@ -456,6 +453,11 @@ body {
                 background: url('../assets/images/selection-line.svg') no-repeat center / contain;
             }
         }
+    }
+
+    &__option:has(.settings__radio:disabled) {
+        opacity: 0.4;
+        cursor: not-allowed;
     }
 
     &__radio {
@@ -570,4 +572,7 @@ body {
     to {
         transform: translateY(0);
     }
+}
+.is-hidden {
+    display: none;
 }

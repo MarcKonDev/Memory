@@ -5,13 +5,14 @@ import { GameState } from './game_state';
 import { showScreen } from './screens';
 import { setupSettings, resetSettings, Settings } from './settings';
 import { setupExitPopup } from './exit-popup';
+import { DEFAULT_THEME, getTheme } from './themes';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
     pointsPlayer2: 0,
     activePlayer: 1,
     openCards: [],
-    gameField: createBoard(18)
+    gameField: createBoard(18, getTheme(DEFAULT_THEME).cards)
 }
 
 const fieldRef = document.querySelector('#field');
@@ -20,6 +21,7 @@ const playerTwoPoints = document.querySelectorAll('.scoreboard__points--player2'
 const GAME_OVER_DELAY_MS = 2400;
 const resetButtons = document.querySelectorAll('.button--secondary');
 const playButton = document.querySelector('.button--yellow');
+const drawIcon = document.querySelector<HTMLImageElement>('.draw__icon');
 
 init();
 
@@ -33,7 +35,7 @@ function init() {
     setupResetButtons();
     setupPlayButton();
     setupSettings(startGame);
-    setupExitPopup(() => showScreen("settings"));
+    setupExitPopup(exitGame);
 }
 
 function setupPlayButton():void {
@@ -186,13 +188,32 @@ function setupResetButtons(): void {
     }
 }
 
+/** Wendet das Theme an: Farbschema per data-theme, Bilder und Button-Beschriftung per Code. */
+function applyTheme(themeName: string): void {
+    const theme = getTheme(themeName);
+    document.body.dataset.theme = theme.name;
+    if (drawIcon) {
+        drawIcon.src = theme.drawIcon;
+    }
+    for (const button of resetButtons) {
+        button.textContent = theme.resetLabel;
+    }
+}
+
+/** Verlässt das Spiel über das Exit-Popup und zeigt wieder die Settings im Standard-Look. */
+function exitGame(): void {
+    applyTheme(DEFAULT_THEME);
+    showScreen("settings");
+}
+
 /** Startet ein neues Spiel mit den gewählten Settings. */
 function startGame(settings: Settings): void {
+    applyTheme(settings.theme);
     gameState.pointsPlayer1 = 0;
     gameState.pointsPlayer2 = 0;
     gameState.activePlayer = settings.player;
     gameState.openCards = [];
-    gameState.gameField = createBoard(settings.pairs);
+    gameState.gameField = createBoard(settings.pairs, getTheme(settings.theme).cards);
     setFieldSize();
     renderBoard();
     renderScores();
@@ -205,7 +226,8 @@ function resetGame(): void {
     gameState.pointsPlayer2 = 0;
     gameState.activePlayer = 1;
     gameState.openCards = [];
-    gameState.gameField = createBoard(18);
+    applyTheme(DEFAULT_THEME);
+    gameState.gameField = createBoard(18, getTheme(DEFAULT_THEME).cards);
     renderBoard();
     renderScores();
     renderActivePlayer();

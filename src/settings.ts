@@ -1,3 +1,5 @@
+import { DEFAULT_THEME, getTheme } from './themes';
+
 export interface Settings {
     theme: string;
     player: 1 | 2;
@@ -8,6 +10,7 @@ const FORM = document.querySelector<HTMLFormElement>('.settings__form');
 const SUMMARY_ANIMATION_MS = 200;
 const START_BUTTON = document.querySelector<HTMLButtonElement>('.settings__start');
 const SUMMARY_ITEMS = document.querySelectorAll<HTMLElement>('[data-summary]');
+const PREVIEW = document.querySelector<HTMLImageElement>('.settings__preview');
 const PLACEHOLDERS: Record<string, string> = {
     theme: 'Game theme',
     player: 'Player',
@@ -55,6 +58,13 @@ function renderSummary(): void {
     }
 }
 
+/** Zeigt die Vorschau des gewählten Themes, solange keins gewählt ist die des Standard-Themes. */
+function renderPreview(): void {
+    if (PREVIEW) {
+        PREVIEW.src = getTheme(getCheckedInput('theme')?.value ?? DEFAULT_THEME).preview;
+    }
+}
+
 /** Gibt den Start-Button frei, sobald alle drei Auswahlen getroffen sind. */
 function updateStartButton(): void {
     if (START_BUTTON) {
@@ -66,6 +76,7 @@ function updateStartButton(): void {
 export function resetSettings(): void {
     FORM?.reset();
     renderSummary();
+    renderPreview();
     updateStartButton();
 }
 
@@ -73,6 +84,7 @@ export function resetSettings(): void {
 export function setupSettings(onStart: (settings: Settings) => void): void {
     FORM?.addEventListener('change', () => {
         renderSummary();
+        renderPreview();
         updateStartButton();
     });
     START_BUTTON?.addEventListener('click', () => {
