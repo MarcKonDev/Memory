@@ -3,7 +3,8 @@ import { createBoard } from './card';
 import { createCardsHTML } from './card_template';
 import { GameState } from './game_state';
 import { showScreen } from './screens';
-import { setupSettings, Settings } from './settings';
+import { setupSettings, resetSettings, Settings } from './settings';
+import { setupExitPopup } from './exit-popup';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
@@ -32,6 +33,7 @@ function init() {
     setupResetButtons();
     setupPlayButton();
     setupSettings(startGame);
+    setupExitPopup(() => showScreen("settings"));
 }
 
 function setupPlayButton():void {
@@ -207,6 +209,7 @@ function resetGame(): void {
     renderBoard();
     renderScores();
     renderActivePlayer();
-    showScreen("game");
+    resetSettings();
+    showScreen("home");
 }
 

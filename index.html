@@ -264,6 +264,15 @@
             </div>
         </section>
     </main>
+
+    <dialog class="exit-popup" aria-labelledby="exit-popup-title">
+        <h2 class="exit-popup__title" id="exit-popup-title">Are you sure you want to quit the game?</h2>
+        <div class="exit-popup__actions">
+            <button class="button button--filled" type="button" data-popup="back">Back to game</button>
+            <button class="button exit-popup__exit" type="button" data-popup="exit">Exit game</button>
+        </div>
+    </dialog>
+
     <script type="module" src="/src/main.ts"></script>
 </body>
 

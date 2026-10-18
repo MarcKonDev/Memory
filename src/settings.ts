@@ -4,7 +4,8 @@ export interface Settings {
     pairs: number;
 }
 
-const FORM = document.querySelector('.settings__form');
+const FORM = document.querySelector<HTMLFormElement>('.settings__form');
+const SUMMARY_ANIMATION_MS = 200;
 const START_BUTTON = document.querySelector<HTMLButtonElement>('.settings__start');
 const SUMMARY_ITEMS = document.querySelectorAll<HTMLElement>('[data-summary]');
 const PLACEHOLDERS: Record<string, string> = {
@@ -34,11 +35,23 @@ function getSettings(): Settings | null {
     return { theme: theme.value, player: Number(player.value) as 1 | 2, pairs: Number(size.value) };
 }
 
+/** Setzt den Text eines Leisten-Eintrags und animiert ihn, wenn er sich geändert hat. */
+function updateSummaryItem(item: HTMLElement, text: string): void {
+    if (item.textContent === text) {
+        return;
+    }
+    item.textContent = text;
+    item.animate(
+        [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }],
+        { duration: SUMMARY_ANIMATION_MS, easing: 'ease-out' }
+    );
+}
+
 /** Schreibt die gewählten Optionen in die Leiste, sonst den Platzhalter. */
 function renderSummary(): void {
     for (const item of SUMMARY_ITEMS) {
         const name = item.dataset.summary ?? '';
-        item.textContent = getLabelText(getCheckedInput(name)) ?? PLACEHOLDERS[name];
+        updateSummaryItem(item, getLabelText(getCheckedInput(name)) ?? PLACEHOLDERS[name]);
     }
 }
 
@@ -47,6 +60,13 @@ function updateStartButton(): void {
     if (START_BUTTON) {
         START_BUTTON.disabled = getSettings() === null;
     }
+}
+
+/** Setzt alle Auswahlen zurück (Radios, Leiste und Start-Button). */
+export function resetSettings(): void {
+    FORM?.reset();
+    renderSummary();
+    updateStartButton();
 }
 
 /** Verbindet das Formular und den Start-Button mit der Spiellogik. */

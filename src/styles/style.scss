@@ -219,6 +219,22 @@ body {
         font-size: 28px;
     }
 
+    &--filled {
+        width: 182px;
+        height: 57px;
+        background-color: $teal-solid;
+        border: none;
+        color: $white;
+        font-size: 20px;
+        box-shadow: none;
+
+        &:hover {
+            border: 3px solid $teal-dark;
+            background-color: rgba(102, 207, 188, 0.7);
+            box-shadow: none;
+        }
+    }
+
     &__controller {
         width: 44px;
         height: 32px;
@@ -503,5 +519,55 @@ body {
         height: 56px;
         background-color: $secondary-yellow;
         transform: rotate(15deg);
+    }
+}
+
+.exit-popup {
+    padding: 40px;
+    border: none;
+    background-color: $white;
+    color: $primary-dark;
+    text-align: center;
+
+    &[open] {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 54px;
+        animation: exit-popup-in 300ms ease-out;
+    }
+
+    &::backdrop {
+        background-color: rgba(0, 0, 0, 0.25);
+    }
+
+    &__title {
+        max-width: 459px;
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 24px;
+    }
+
+    &__exit {
+        width: 148px;
+        height: 57px;
+        color: $teal;
+        font-size: 20px;
+    }
+}
+
+@keyframes exit-popup-in {
+    from {
+        transform: translateY(-100vh);
+    }
+
+    to {
+        transform: translateY(0);
     }
 }
