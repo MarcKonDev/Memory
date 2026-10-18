@@ -1,4 +1,4 @@
-export type ScreenName = "game" | "game-over" | "winner" | "draw";
+export type ScreenName = "game" | "game-over" | "winner" | "draw" | "home" | "settings";
 
 const screens = document.querySelectorAll('.screen');
 

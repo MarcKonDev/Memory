@@ -2,7 +2,7 @@ import './styles/style.scss';
 import { createBoard } from './card';
 import { createCardsHTML } from './card_template';
 import { GameState } from './game_state';
-import {showScreen} from './screens';
+import { showScreen } from './screens';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
@@ -16,6 +16,8 @@ const fieldRef = document.querySelector('#field');
 const playerOnePoints = document.querySelectorAll('.scoreboard__points--player1');
 const playerTwoPoints = document.querySelectorAll('.scoreboard__points--player2');
 const GAME_OVER_DELAY_MS = 2400;
+const resetButtons = document.querySelectorAll('.button--secondary');
+const playButton = document.querySelector('.button--yellow');
 
 init();
 
@@ -25,7 +27,13 @@ function init() {
     setFieldSize();
     renderScores();
     renderActivePlayer();
-    showScreen("game")
+    showScreen("settings");
+    setupResetButtons();
+    setupPlayButton()
+}
+
+function setupPlayButton():void {
+    playButton?.addEventListener('click', () => showScreen('game'));
 }
 
 function renderBoard() {
@@ -91,9 +99,29 @@ function showResultScreen(): void {
     if (gameState.pointsPlayer1 === gameState.pointsPlayer2) {
         showScreen("draw");
     } else {
+        if (gameState.pointsPlayer1 > gameState.pointsPlayer2) {
+            renderWinner(1)
+        } else {
+            renderWinner(2)
+        }
         showScreen("winner");
     }
 }
+
+function renderWinner(winner: 1 | 2): void {
+    const title = document.querySelector('.winner__title');
+    const icon = document.querySelector('.winner__icon') as HTMLImageElement;
+    const isPlayerOne = winner === 1;
+    if (title) {
+        title.classList.toggle('winner__title--player1', winner === 1)
+        title.classList.toggle('winner__title--player2', winner === 2);
+        title.textContent = isPlayerOne ? 'Blue Player' : 'Orange Player';
+    }
+    if (icon) {
+        icon.src = isPlayerOne ? "./src/assets/images/winner-p1.svg" : "./src/assets/images/winner-p2.svg";
+    }
+}
+
 
 function cleanOpenCards() {
     gameState.openCards[0].hidden = true;
@@ -128,12 +156,12 @@ function setFieldSize() {
 
 
 function renderScores() {
-    for(const playerOnePoint of playerOnePoints){
+    for (const playerOnePoint of playerOnePoints) {
         const pointsP1 = gameState.pointsPlayer1
         playerOnePoint.textContent = `${pointsP1}`
     }
 
-    for(const playerTwoPoint of playerTwoPoints){
+    for (const playerTwoPoint of playerTwoPoints) {
         const pointsP2 = gameState.pointsPlayer2
         playerTwoPoint.textContent = `${pointsP2}`
     }
@@ -145,3 +173,23 @@ function renderActivePlayer() {
     markerarea?.classList.toggle("header__marker--player1", activePlayer === 1);
     markerarea?.classList.toggle("header__marker--player2", activePlayer === 2);
 }
+
+
+function setupResetButtons(): void {
+    for (const button of resetButtons) {
+        button.addEventListener('click', resetGame);
+    }
+}
+
+function resetGame(): void {
+    gameState.pointsPlayer1 = 0;
+    gameState.pointsPlayer2 = 0;
+    gameState.activePlayer = 1;
+    gameState.openCards = [];
+    gameState.gameField = createBoard(18);
+    renderBoard();
+    renderScores();
+    renderActivePlayer();
+    showScreen("game");
+}
+
