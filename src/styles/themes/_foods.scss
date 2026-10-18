@@ -3,6 +3,8 @@
 $food-font-title: 'Klee One', Arial, Helvetica, sans-serif;
 $food-font-text: 'Delius Unicase', Arial, Helvetica, sans-serif;
 $food-pawn: url('../../assets/images/food/pawn.svg');
+$food-border-exit: url('../../assets/images/food/exit-border.svg');
+$food-border-popup: url('../../assets/images/food/popup-border.svg');
 
 // Die Selektoren beginnen mit body[data-theme], damit sie die Basis-Styles
 // sicher überschreiben, egal in welcher Reihenfolge das CSS ausgegeben wird.
@@ -11,17 +13,39 @@ body[data-theme='foods'] {
     font-family: $food-font-text;
 
     // Spielfeld und Karten
+    // Karten sind 122 x 120 px, der Abstand und der Header-Abstand
+    // unterscheiden sich je Brettgröße (Werte aus den Food_theme-Frames).
     .field--16 {
         grid-template-columns: repeat(4, 122px);
+        gap: 16px;
     }
 
-    .field--24,
+    .field--24 {
+        grid-template-columns: repeat(6, 122px);
+        gap: 8px;
+    }
+
     .field--36 {
         grid-template-columns: repeat(6, 122px);
+        gap: 6px;
+    }
+
+    .game:has(.field--16) .header__container {
+        margin: 10px auto 54px;
+    }
+
+    .game:has(.field--24) .header__container {
+        margin: 39px auto 54px;
+    }
+
+    .game:has(.field--36) .header__container {
+        margin: 10px auto 20px;
     }
 
     .card {
-        height: 122px;
+        width: 122px;
+        height: 120px;
+        aspect-ratio: auto;
     }
 
     .card__face {
@@ -79,6 +103,7 @@ body[data-theme='foods'] {
 
     // Scoreboard (Spiel und Game over)
     .scoreboard {
+        box-sizing: border-box;
         width: auto;
         height: 54px;
         padding: 0 16px;
@@ -123,25 +148,36 @@ body[data-theme='foods'] {
         width: auto;
         height: auto;
         background-color: $food-cream;
-        border: 3px solid $food-orange;
+        background-image: $food-border-exit;
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        border: none;
         border-radius: 10px;
         color: $food-orange;
+        font-family: $food-font-text;
         font-size: 16px;
         font-weight: 700;
+        line-height: 21px;
 
         &:hover {
-            border: 3px solid $food-orange;
+            background-image: none;
             background-color: $food-orange;
+            border: none;
             color: $white;
             box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.2);
         }
     }
 
+    .button__icon {
+        height: 22px;
+    }
+
     .button--secondary,
     .button--secondary:hover {
         padding: 12px 20px;
+        background-image: none;
         background-color: $food-orange;
-        border: 3px solid $food-orange;
+        border: none;
         color: $white;
         box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, 0.2);
     }
@@ -150,11 +186,13 @@ body[data-theme='foods'] {
         width: auto;
         height: auto;
         background-color: $food-orange-light;
+        background-image: $food-border-popup;
         color: $white;
         font-size: 16px;
     }
 
     .button--filled:hover {
+        background-image: none;
         background-color: $food-orange;
     }
 
@@ -185,10 +223,11 @@ body[data-theme='foods'] {
 
     .game-over__label {
         margin-top: 104px;
-        margin-bottom: 8px;
+        margin-bottom: 24px;
         font-family: $food-font-title;
         font-size: 42px;
         font-weight: 600;
+        line-height: 48px;
     }
 
     .game-over .scoreboard {
@@ -210,8 +249,11 @@ body[data-theme='foods'] {
         font-family: $food-font-title;
     }
 
+    // Der Inhalt sitzt in Figma 4px über der Mitte (Oben 192 statt 196).
     .winner {
         justify-content: center;
+        box-sizing: border-box;
+        padding-bottom: 8px;
     }
 
     .winner__confetti {
@@ -221,6 +263,7 @@ body[data-theme='foods'] {
     .winner__label {
         color: $food-brown;
         font-weight: 400;
+        line-height: 37px;
     }
 
     .winner__title {
@@ -243,14 +286,16 @@ body[data-theme='foods'] {
     }
 
     .draw__icon {
-        padding: 32px 19px;
-        margin: 10px 0 64px;
+        padding: 33px 12.5px 33px 24.5px;
+        margin: 8px 0 64px;
     }
 
     .draw__label {
+        margin-bottom: 8px;
         color: $food-orange;
         font-size: 40px;
         font-weight: 600;
+        line-height: normal;
     }
 
     .draw__img {
@@ -272,8 +317,13 @@ body[data-theme='foods'] {
         color: $food-brown;
     }
 
+    .exit-popup::backdrop {
+        background-color: rgba(0, 0, 0, 0.45);
+    }
+
     .exit-popup[open] {
-        gap: 40px;
+        gap: 51px;
+        animation-name: exit-popup-in-bottom;
     }
 
     .exit-popup__title {
@@ -284,5 +334,15 @@ body[data-theme='foods'] {
 
     .exit-popup__actions {
         gap: 10px;
+    }
+}
+
+@keyframes exit-popup-in-bottom {
+    from {
+        transform: translateY(100vh);
+    }
+
+    to {
+        transform: translateY(0);
     }
 }

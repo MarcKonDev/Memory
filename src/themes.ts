@@ -9,6 +9,7 @@ export interface Theme {
     preview: string;
     drawIcon: string;
     resetLabel: string;
+    backLabel: string;
 }
 
 export const DEFAULT_THEME: ThemeName = 'code-vibes';
@@ -19,14 +20,16 @@ const THEMES: Record<ThemeName, Theme> = {
         cards: svgLogos,
         preview: new URL('./assets/images/preview.svg', import.meta.url).href,
         drawIcon: new URL('./assets/images/draw.svg', import.meta.url).href,
-        resetLabel: 'Back to start'
+        resetLabel: 'Back to start',
+        backLabel: 'Back to game'
     },
     foods: {
         name: 'foods',
         cards: foodLogos,
         preview: new URL('./assets/images/food/preview.png', import.meta.url).href,
         drawIcon: new URL('./assets/images/food/draw.svg', import.meta.url).href,
-        resetLabel: 'Home'
+        resetLabel: 'Home',
+        backLabel: 'No, back to game'
     }
 };
 

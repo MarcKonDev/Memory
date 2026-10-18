@@ -22,6 +22,7 @@ const GAME_OVER_DELAY_MS = 2400;
 const resetButtons = document.querySelectorAll('.button--secondary');
 const playButton = document.querySelector('.button--yellow');
 const drawIcon = document.querySelector<HTMLImageElement>('.draw__icon');
+const backButton = document.querySelector('[data-popup="back"]');
 
 init();
 
@@ -197,6 +198,9 @@ function applyTheme(themeName: string): void {
     }
     for (const button of resetButtons) {
         button.textContent = theme.resetLabel;
+    }
+    if (backButton) {
+        backButton.textContent = theme.backLabel;
     }
 }
 
