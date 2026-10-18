@@ -3,6 +3,7 @@ import { createBoard } from './card';
 import { createCardsHTML } from './card_template';
 import { GameState } from './game_state';
 import { showScreen } from './screens';
+import { setupSettings, Settings } from './settings';
 
 const gameState: GameState = {
     pointsPlayer1: 0,
@@ -27,13 +28,14 @@ function init() {
     setFieldSize();
     renderScores();
     renderActivePlayer();
-    showScreen("settings");
+    showScreen("home");
     setupResetButtons();
-    setupPlayButton()
+    setupPlayButton();
+    setupSettings(startGame);
 }
 
 function setupPlayButton():void {
-    playButton?.addEventListener('click', () => showScreen('game'));
+    playButton?.addEventListener('click', () => showScreen('settings'));
 }
 
 function renderBoard() {
@@ -151,6 +153,7 @@ function isGameOver(): boolean {
 
 function setFieldSize() {
     const cardCount = gameState.gameField.length;
+    fieldRef?.classList.remove('field--16', 'field--24', 'field--36');
     fieldRef?.classList.add(`field--${cardCount}`);
 }
 
@@ -179,6 +182,20 @@ function setupResetButtons(): void {
     for (const button of resetButtons) {
         button.addEventListener('click', resetGame);
     }
+}
+
+/** Startet ein neues Spiel mit den gewählten Settings. */
+function startGame(settings: Settings): void {
+    gameState.pointsPlayer1 = 0;
+    gameState.pointsPlayer2 = 0;
+    gameState.activePlayer = settings.player;
+    gameState.openCards = [];
+    gameState.gameField = createBoard(settings.pairs);
+    setFieldSize();
+    renderBoard();
+    renderScores();
+    renderActivePlayer();
+    showScreen("game");
 }
 
 function resetGame(): void {
