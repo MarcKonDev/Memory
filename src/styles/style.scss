@@ -15,6 +15,17 @@ body {
     min-height: 100vh;
 }
 
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 
 .field {
     display: grid;
@@ -215,9 +226,11 @@ body {
     }
 
     &--small {
-        gap: 12px;
-        padding: 12px 24px;
-        font-size: 28px;
+        gap: 8px;
+        padding: 14px 20px;
+        font-family: 'Red Rose', Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        line-height: 25px;
     }
 
     &--filled {
@@ -362,7 +375,9 @@ body {
 .settings {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding-top: 114px;
     background-color: $white;
     color: $primary-dark;
     font-family: 'Almarai', Arial, Helvetica, sans-serif;
@@ -370,23 +385,27 @@ body {
     &__container {
         display: flex;
         flex-direction: column;
-        gap: 48px;
+        gap: 62px;
         width: 1103px;
         max-width: 100%;
     }
 
     &__title {
+        position: relative;
         align-self: flex-start;
+        width: 251px;
+        margin-left: 3px;
+        text-align: center;
         font-family: 'Red Rose', Arial, Helvetica, sans-serif;
         font-size: 54px;
         font-weight: 700;
-        line-height: 1;
+        line-height: 67px;
     }
 
     &__underline {
-        display: block;
-        width: 100%;
-        margin-top: 4px;
+        position: absolute;
+        top: 55px;
+        left: -11.5px;
     }
 
     &__content {
@@ -413,15 +432,17 @@ body {
 
     &__legend {
         padding: 0;
+        margin-bottom: 16px;
     }
 
     &__heading {
         display: flex;
         align-items: center;
         gap: 8px;
+        min-height: 32px;
         font-size: 24px;
         font-weight: 700;
-        line-height: 1;
+        line-height: 27px;
     }
 
     &__icon {
@@ -439,8 +460,9 @@ body {
         display: flex;
         align-items: center;
         gap: 10px;
+        min-height: 24px;
         font-size: 20px;
-        line-height: 1;
+        line-height: 22px;
         cursor: pointer;
 
         &:has(.settings__radio:checked) {
@@ -490,26 +512,27 @@ body {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        gap: 48px;
+        gap: 45px;
     }
 
     &__preview {
         display: block;
-        width: 458px;
+        width: 460px;
         max-width: 100%;
         height: auto;
-        border-radius: 24px;
+        border-radius: 16px;
     }
 
     &__summary {
         display: flex;
         align-items: center;
         gap: 16px;
+        box-sizing: border-box;
         height: 81px;
         padding: 14px 20px;
         background-color: $light-grey;
-        font-size: 28px;
-        line-height: 1;
+        font-size: 20px;
+        line-height: 22px;
     }
 
     &__summary-item {
@@ -519,8 +542,9 @@ body {
     &__slash {
         width: 8px;
         height: 56px;
+        margin: 0 5.27px;
         background-color: $secondary-yellow;
-        transform: rotate(15deg);
+        transform: rotate(19.33deg);
     }
 }
 

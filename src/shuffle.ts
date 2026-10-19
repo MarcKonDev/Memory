@@ -1,10 +1,10 @@
-import { Card } from './card'
+import type { Card } from './card';
 
-
-export function shuffle(cards: Card[]):Card[] {
-    for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    return cards;
+/** Mischt die Karten zufällig (Fisher-Yates) und gibt dieselbe Liste zurück. */
+export function shuffle(cards: Card[]): Card[] {
+  for (let index = cards.length - 1; index > 0; index--) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [cards[index], cards[randomIndex]] = [cards[randomIndex], cards[index]];
+  }
+  return cards;
 }
