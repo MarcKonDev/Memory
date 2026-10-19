@@ -1,10 +1,14 @@
 import { svgLogos } from './assets/svgs';
 import { foodLogos } from './assets/foods';
 
-/** Namen der fertigen Themes (Werte der Theme-Radios in den Settings). */
+/**
+ * Names of the finished themes (values of the theme radios in the settings).
+ */
 export type ThemeName = 'code-vibes' | 'foods';
 
-/** Alles, was sich zwischen den Themes unterscheidet und nicht per CSS lösbar ist. */
+/**
+ * Everything that differs between the themes and cannot be solved with CSS alone.
+ */
 export interface Theme {
   name: ThemeName;
   cards: string[];
@@ -14,6 +18,9 @@ export interface Theme {
   backLabel: string;
 }
 
+/**
+ * The theme that is used when no other theme is chosen.
+ */
 export const DEFAULT_THEME: ThemeName = 'code-vibes';
 
 const THEMES: Record<ThemeName, Theme> = {
@@ -35,7 +42,12 @@ const THEMES: Record<ThemeName, Theme> = {
   }
 };
 
-/** Liefert das Theme zum Namen aus den Settings, bei unbekanntem Namen das Standard-Theme. */
+/**
+ * Finds the theme for a name from the settings.
+ *
+ * @param name - The name of the theme, for example `foods`
+ * @returns The matching theme, or the default theme if the name is unknown
+ */
 export function getTheme(name: string): Theme {
   return name in THEMES ? THEMES[name as ThemeName] : THEMES[DEFAULT_THEME];
 }

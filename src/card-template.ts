@@ -1,7 +1,13 @@
 import type { Card } from './card';
 
-/** Baut das HTML einer einzelnen Karte (umgedreht, wenn sie nicht mehr verdeckt ist). */
-function cardTemplate(card: Card, index: number): string {
+/**
+ * Builds the HTML of a single card, flipped if it is not hidden anymore.
+ *
+ * @param card - The card to render
+ * @param index - The position of the card on the board (stored in `data-index`)
+ * @returns The HTML string of the card button
+ */
+export function cardTemplate(card: Card, index: number): string {
   return `
     <button class="card ${card.hidden ? '' : 'is-flipped'}" type="button" data-index="${index}">
       <div class="card__inner">
@@ -11,13 +17,4 @@ function cardTemplate(card: Card, index: number): string {
         </div>
       </div>
     </button>`;
-}
-
-/** Baut das HTML für alle Karten des Spielfelds. */
-export function createCardsHTML(boardCards: Card[]): string {
-  let renderedCards = '';
-  for (let index = 0; index < boardCards.length; index++) {
-    renderedCards += cardTemplate(boardCards[index], index);
-  }
-  return renderedCards;
 }

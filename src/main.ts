@@ -1,9 +1,8 @@
 import './styles/style.scss';
-import { createBoard } from './card';
+import { createBoard, createCardsHTML } from './card';
 import type { Card } from './card';
-import { createCardsHTML } from './card-template';
 import type { GameState, PlayerNumber } from './game-state';
-import { showScreen } from './screens';
+import { showScreen, slideInScreen } from './screens';
 import { setupSettings, resetSettings } from './settings';
 import type { Settings } from './settings';
 import { setupExitPopup } from './exit-popup';
@@ -13,6 +12,9 @@ const DEFAULT_PAIRS = 18;
 const MAX_OPEN_CARDS = 2;
 const MISMATCH_DELAY_MS = 1000;
 const GAME_OVER_DELAY_MS = 2400;
+const FLIP_DURATION_MS = 300;
+const LAST_PAIR_VISIBLE_MS = 700;
+const END_SCREEN_DELAY_MS = FLIP_DURATION_MS + LAST_PAIR_VISIBLE_MS;
 const FIELD_SIZE_CLASSES: string[] = ['field--16', 'field--24', 'field--36'];
 const WINNER_TEXTS: Record<PlayerNumber, string> = { 1: 'Blue Player', 2: 'Orange Player' };
 const WINNER_ICONS: Record<PlayerNumber, string> = {
@@ -39,9 +41,12 @@ const gameState: GameState = {
   gameField: createBoard(DEFAULT_PAIRS, getTheme(DEFAULT_THEME).cards)
 };
 
-init();
+document.addEventListener('DOMContentLoaded', init);
 
-/** Baut das Spiel auf und verbindet alle Buttons und Screens. */
+/**
+ * Builds the game and connects all buttons and screens.
+ * Runs as soon as the page has finished loading.
+ */
 function init(): void {
   renderGame();
   setupClickHandler();
@@ -52,19 +57,25 @@ function init(): void {
   setupExitPopup(exitGame);
 }
 
-/** Der Play-Button auf dem Startscreen führt zu den Settings. */
+/**
+ * Makes the play button on the start screen open the settings.
+ */
 function setupPlayButton(): void {
   playButton?.addEventListener('click', () => showScreen('settings'));
 }
 
-/** Die "Back to start"-Buttons setzen das Spiel zurück und zeigen den Startscreen. */
+/**
+ * Makes the "Back to start" buttons reset the game and show the start screen.
+ */
 function setupResetButtons(): void {
   for (const button of resetButtons) {
     button.addEventListener('click', resetGame);
   }
 }
 
-/** Zeichnet Spielfeld, Feldgröße, Punkte und aktiven Spieler neu. */
+/**
+ * Redraws the board, the field size, the scores and the active player.
+ */
 function renderGame(): void {
   setFieldSize();
   renderBoard();
@@ -72,50 +83,74 @@ function renderGame(): void {
   renderActivePlayer();
 }
 
-/** Schreibt alle Karten als HTML ins Spielfeld. */
+/**
+ * Writes all cards as HTML into the game field.
+ */
 function renderBoard(): void {
   if (fieldRef) {
     fieldRef.innerHTML = createCardsHTML(gameState.gameField);
   }
 }
 
-/** Setzt die CSS-Klasse des Spielfelds passend zur Kartenanzahl (field--16/24/36). */
+/**
+ * Sets the CSS class of the game field that matches the number of cards.
+ */
 function setFieldSize(): void {
   fieldRef?.classList.remove(...FIELD_SIZE_CLASSES);
   fieldRef?.classList.add(`field--${gameState.gameField.length}`);
 }
 
-/** Schreibt die Punkte eines Spielers in alle Anzeigen (Spielfeld-Header und Game over). */
+/**
+ * Writes the points of one player into all of their score displays.
+ *
+ * @param elements - The score elements of the player (header and game over screen)
+ * @param points - The points to show
+ */
 function renderPoints(elements: NodeListOf<Element>, points: number): void {
   for (const element of elements) {
     element.textContent = String(points);
   }
 }
 
-/** Zeigt die aktuellen Punkte beider Spieler. */
+/**
+ * Shows the current points of both players.
+ */
 function renderScores(): void {
   renderPoints(playerOnePoints, gameState.pointsPlayer1);
   renderPoints(playerTwoPoints, gameState.pointsPlayer2);
 }
 
-/** Färbt den Marker im Header passend zum aktiven Spieler. */
+/**
+ * Colors the marker in the header to match the active player.
+ */
 function renderActivePlayer(): void {
   markerRef?.classList.toggle('header__marker--player1', gameState.activePlayer === 1);
   markerRef?.classList.toggle('header__marker--player2', gameState.activePlayer === 2);
 }
 
-/** Reagiert auf Klicks im Spielfeld (Event Delegation auf die Karten). */
+/**
+ * Listens for clicks on the game field (event delegation on the cards).
+ */
 function setupClickHandler(): void {
   fieldRef?.addEventListener('click', handleFieldClick);
 }
 
-/** Darf diese Karte gerade umgedreht werden? */
+/**
+ * Checks whether a card may be flipped right now.
+ *
+ * @param card - The card that was clicked
+ * @returns `true` if the card is hidden, not found yet and fewer than two cards are open
+ */
 function canFlip(card: Card): boolean {
   const tooManyOpen = gameState.openCards.length === MAX_OPEN_CARDS;
   return !tooManyOpen && !card.found && card.hidden;
 }
 
-/** Dreht die angeklickte Karte um und prüft danach, ob zwei Karten offen sind. */
+/**
+ * Flips the clicked card and then checks whether two cards are open.
+ *
+ * @param event - The click event on the game field
+ */
 function handleFieldClick(event: Event): void {
   const cardElement = (event.target as HTMLElement).closest<HTMLButtonElement>('.card');
   if (!cardElement) {
@@ -131,7 +166,9 @@ function handleFieldClick(event: Event): void {
   cardElement.classList.add('is-flipped');
 }
 
-/** Sind zwei Karten offen, wird entschieden: Paar gefunden oder wieder zudecken. */
+/**
+ * Decides what happens once two cards are open: a pair was found or the cards are hidden again.
+ */
 function checkOpenCards(): void {
   if (gameState.openCards.length !== MAX_OPEN_CARDS) {
     return;
@@ -143,13 +180,20 @@ function checkOpenCards(): void {
   }
 }
 
-/** Zeigen die beiden offenen Karten dasselbe Motiv? */
+/**
+ * Checks whether the two open cards show the same image.
+ *
+ * @returns `true` if both open cards match
+ */
 function isMatch(): boolean {
   const [firstCard, secondCard] = gameState.openCards;
   return firstCard.image === secondCard.image;
 }
 
-/** Markiert das Paar als gefunden, vergibt den Punkt und prüft das Spielende. */
+/**
+ * Marks the pair as found, awards the point and ends the game after the last pair.
+ * The end screen waits until the last card has been flipped over completely.
+ */
 function handleMatch(): void {
   for (const card of gameState.openCards) {
     card.found = true;
@@ -157,19 +201,23 @@ function handleMatch(): void {
   setPoints();
   renderScores();
   if (isGameOver()) {
-    showEndScreen();
+    setTimeout(showEndScreen, END_SCREEN_DELAY_MS);
   }
   gameState.openCards = [];
 }
 
-/** Deckt die Karten wieder zu und gibt den Zug an den anderen Spieler. */
+/**
+ * Hides the cards again and passes the turn to the other player.
+ */
 function handleMismatch(): void {
   cleanOpenCards();
   switchPlayer();
   renderActivePlayer();
 }
 
-/** Gibt dem aktiven Spieler einen Punkt. */
+/**
+ * Gives the active player one point.
+ */
 function setPoints(): void {
   if (gameState.activePlayer === 1) {
     gameState.pointsPlayer1 += 1;
@@ -178,12 +226,16 @@ function setPoints(): void {
   }
 }
 
-/** Wechselt den aktiven Spieler. */
+/**
+ * Switches the active player.
+ */
 function switchPlayer(): void {
   gameState.activePlayer = gameState.activePlayer === 1 ? 2 : 1;
 }
 
-/** Deckt die offenen Karten im Daten-Zustand und im DOM wieder zu. */
+/**
+ * Hides the open cards again, both in the game state and in the DOM.
+ */
 function cleanOpenCards(): void {
   for (const card of gameState.openCards) {
     card.hidden = true;
@@ -193,29 +245,41 @@ function cleanOpenCards(): void {
   gameState.openCards = [];
 }
 
-/** Ist das Spiel vorbei, wenn alle Karten gefunden wurden? */
+/**
+ * Checks whether all cards have been found.
+ *
+ * @returns `true` if the game is over
+ */
 function isGameOver(): boolean {
   return gameState.gameField.every((card: Card): boolean => card.found);
 }
 
-/** Zeigt "Game over" und nach kurzer Zeit das Ergebnis. */
+/**
+ * Shows the "Game over" screen and, after a short time, the result.
+ */
 function showEndScreen(): void {
   showScreen('game-over');
   setTimeout(showResultScreen, GAME_OVER_DELAY_MS);
 }
 
-/** Zeigt je nach Punktestand den Gewinner oder das Unentschieden. */
+/**
+ * Slides in the winner or the draw screen, depending on the final score.
+ */
 function showResultScreen(): void {
   const { pointsPlayer1, pointsPlayer2 } = gameState;
   if (pointsPlayer1 === pointsPlayer2) {
-    showScreen('draw');
+    slideInScreen('draw');
     return;
   }
   renderWinner(pointsPlayer1 > pointsPlayer2 ? 1 : 2);
-  showScreen('winner');
+  slideInScreen('winner');
 }
 
-/** Trägt Name, Farbe und Icon des Gewinners in den Winner-Screen ein. */
+/**
+ * Fills the winner screen with the name, color and icon of the winner.
+ *
+ * @param winner - The player who won
+ */
 function renderWinner(winner: PlayerNumber): void {
   winnerTitle?.classList.toggle('winner__title--player1', winner === 1);
   winnerTitle?.classList.toggle('winner__title--player2', winner === 2);
@@ -227,7 +291,11 @@ function renderWinner(winner: PlayerNumber): void {
   }
 }
 
-/** Wendet das Theme an: Farbschema per data-theme, Bilder und Button-Beschriftung per Code. */
+/**
+ * Applies a theme: the color scheme via `data-theme`, images and button labels via code.
+ *
+ * @param themeName - The name of the theme, for example `foods`
+ */
 function applyTheme(themeName: string): void {
   const theme = getTheme(themeName);
   document.body.dataset.theme = theme.name;
@@ -242,7 +310,13 @@ function applyTheme(themeName: string): void {
   }
 }
 
-/** Setzt Punkte, Spieler und Karten für eine neue Runde zurück. */
+/**
+ * Resets points, player and cards for a new round.
+ *
+ * @param player - The player who starts
+ * @param pairs - The number of pairs on the board
+ * @param themeName - The theme whose images are used for the cards
+ */
 function resetGameState(player: PlayerNumber, pairs: number, themeName: string): void {
   gameState.pointsPlayer1 = 0;
   gameState.pointsPlayer2 = 0;
@@ -251,7 +325,11 @@ function resetGameState(player: PlayerNumber, pairs: number, themeName: string):
   gameState.gameField = createBoard(pairs, getTheme(themeName).cards);
 }
 
-/** Startet ein neues Spiel mit den gewählten Settings. */
+/**
+ * Starts a new game with the chosen settings.
+ *
+ * @param settings - The theme, starting player and board size from the settings
+ */
 function startGame(settings: Settings): void {
   applyTheme(settings.theme);
   resetGameState(settings.player, settings.pairs, settings.theme);
@@ -259,13 +337,17 @@ function startGame(settings: Settings): void {
   showScreen('game');
 }
 
-/** Verlässt das Spiel über das Exit-Popup und zeigt wieder die Settings im Standard-Look. */
+/**
+ * Leaves the game via the exit popup and shows the settings in the default look again.
+ */
 function exitGame(): void {
   applyTheme(DEFAULT_THEME);
   showScreen('settings');
 }
 
-/** Setzt alles zurück und zeigt den Startscreen. */
+/**
+ * Resets everything and shows the start screen.
+ */
 function resetGame(): void {
   applyTheme(DEFAULT_THEME);
   resetGameState(1, DEFAULT_PAIRS, DEFAULT_THEME);

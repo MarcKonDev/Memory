@@ -1,9 +1,13 @@
 import type { Card } from './card';
 
-/** Nummer eines Spielers: 1 = Blue, 2 = Orange. */
+/**
+ * Number of a player: 1 = Blue, 2 = Orange.
+ */
 export type PlayerNumber = 1 | 2;
 
-/** Alle Daten, die sich während einer Runde ändern. */
+/**
+ * All data that changes during a round.
+ */
 export interface GameState {
   pointsPlayer1: number;
   pointsPlayer2: number;

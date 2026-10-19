@@ -12,7 +12,9 @@ body {
 }
 
 .screen {
+    box-sizing: border-box;
     min-height: 100vh;
+    padding-inline: 32px;
 }
 
 .visually-hidden {
@@ -86,6 +88,8 @@ body {
 }
 
 .header {
+    display: flow-root;
+
     &__container {
         color: white;
         max-width: 1220px;
@@ -148,6 +152,11 @@ body {
     &__icon {
         height: 20px;
         width: 24px;
+    }
+
+    // Platz für zwei Stellen, damit nichts verrutscht, wenn z.B. von 9 auf 10 gezählt wird
+    &__points {
+        min-width: 1.8ch;
     }
 }
 
@@ -231,6 +240,14 @@ body {
         font-family: 'Red Rose', Arial, Helvetica, sans-serif;
         font-size: 20px;
         line-height: 25px;
+
+        &:not(:disabled):hover {
+            transform: scale(1.11);
+
+            .settings__start-icon {
+                transform: rotate(-5.33deg) scale(1.125);
+            }
+        }
     }
 
     &--filled {
@@ -465,6 +482,7 @@ body {
         line-height: 22px;
         cursor: pointer;
 
+        &:hover,
         &:has(.settings__radio:checked) {
             font-weight: 700;
 
@@ -475,11 +493,6 @@ body {
                 background: url('../assets/images/selection-line.svg') no-repeat center / contain;
             }
         }
-    }
-
-    &__option:has(.settings__radio:disabled) {
-        opacity: 0.4;
-        cursor: not-allowed;
     }
 
     &__radio {
@@ -533,6 +546,10 @@ body {
         background-color: $light-grey;
         font-size: 20px;
         line-height: 22px;
+    }
+
+    &__start-icon {
+        transition: transform 200ms ease-out;
     }
 
     &__summary-item {
@@ -597,6 +614,15 @@ body {
         transform: translateY(0);
     }
 }
+
+.is-sliding-in {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    overflow: hidden;
+    background-color: $primary-dark;
+}
+
 .is-hidden {
     display: none;
 }

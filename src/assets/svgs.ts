@@ -265,7 +265,9 @@ const firebase: string = `<svg width="53" height="70" viewBox="0 0 53 70" fill="
 </defs>
 </svg>`;
 
-/** Die 18 Code-vibes-Logos als SVG-Strings. */
+/**
+ * The 18 code vibes logos as SVG strings.
+ */
 export const svgLogos: string[] = [
   git,
   typeScript,

@@ -178,7 +178,9 @@ const food18: string = `<svg width="80" height="80" viewBox="0 0 80 80" fill="no
 </defs>
 </svg>`;
 
-/** Die 18 Food-Motive als SVG-Strings. */
+/**
+ * The 18 food motifs as SVG strings.
+ */
 export const foodLogos: string[] = [
   food01,
   food02,
