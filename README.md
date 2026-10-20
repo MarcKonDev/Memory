@@ -1,84 +1,86 @@
 # Memory
 
-Ein Memory-Spiel für zwei Spieler, entstanden als Projekt der Developer Akademie.
-Gebaut mit TypeScript, SCSS und Vite, ohne Framework.
+🇬🇧 English | [🇩🇪 Deutsch](README.de.md)
 
-**Live-Version:** https://marc-konopka.developerakademie.net/Memory/index.html
+A two-player memory game, created as a project for the Developer Akademie.
+Built with TypeScript, SCSS and Vite, without a framework.
 
-## Spielablauf
+**Live version:** https://marc-konopka.developerakademie.net/Memory/index.html
 
-1. Auf dem Startscreen mit **Play** zu den Settings wechseln.
-2. In den Settings drei Dinge wählen: **Theme**, **Startspieler** (Blue oder Orange) und **Spielfeldgröße**.
-   Der **Start**-Button wird erst frei, wenn alle drei Auswahlen getroffen sind.
-3. Die Spieler decken abwechselnd zwei Karten auf. Passen sie zusammen, bekommt der aktive Spieler einen Punkt und darf weiterspielen. Passen sie nicht, werden sie wieder zugedeckt und der andere Spieler ist dran.
-4. Sind alle Paare gefunden, erscheint **Game over** mit dem Endstand. Danach folgt der Gewinner oder ein Unentschieden und mit einem Klick geht es zurück zum Start.
-5. Über **Exit Game** kann ein laufendes Spiel nach einer Sicherheitsabfrage verlassen werden.
+## How to play
 
-## Funktionen
+1. On the start screen, click **Play** to open the settings.
+2. In the settings, choose three things: the **theme**, the **starting player** (Blue or Orange) and the **board size**.
+   The **Start** button is enabled as soon as all three choices are made.
+3. The players take turns flipping two cards. If the cards match, the active player gets a point and plays again. If they do not match, the cards are turned back and the other player is next.
+4. When all pairs are found, a **Game over** screen shows the final score. After that, the winner or a draw is shown, and one click leads back to the start.
+5. With **Exit Game**, a running game can be left after a confirmation.
 
-- Startseite mit animiertem Controller-Icon auf dem Play-Button
-- Settings mit Auswahl von Theme, Startspieler und Spielfeldgröße (16, 24 oder 36 Karten)
-- Zwei Themes, die Farbschema, Schriften und Motive ändern:
-  - **Code vibes** mit Logos aus der Webentwicklung
-  - **Foods** mit Speisen-Motiven
-- Spielfeld mit Punktestand beider Spieler, Anzeige des aktuellen Spielers und flüssiger Flip-Animation der Karten
-- Game-over-Screen mit Endstand, Gewinner-Anzeige und Unentschieden-Screen
+## Features
+
+- Start screen with an animated controller icon on the play button
+- Settings to choose the theme, the starting player and the board size (16, 24 or 36 cards)
+- Two themes that change the color scheme, fonts and motifs:
+  - **Code vibes** with web development logos
+  - **Foods** with food motifs
+- Game field with the score of both players, an indicator for the current player and a smooth card flip animation
+- Game over screen with the final score, a winner screen and a draw screen
 
 ## Extras
 
-- Exit-Popup mit Sicherheitsabfrage (`<dialog>`) und eigener Einblend-Animation je Theme
-- Auswahl-Leiste in den Settings, die die gewählten Optionen anzeigt und bei Änderungen animiert
-- Vorschau-Bild in den Settings, das zum Theme passt (auch schon beim Hovern über eine Option)
-- Hover-Effekt in den Settings: Option wird fett und bekommt die Linie, der Start-Button vergrößert sich und das Icon dreht sich (nur wenn er freigegeben ist)
-- Hover-Effekte auf den Buttons
-- Automatischer Übergang von "Game over" zum Ergebnis; der Winner- bzw. Draw-Screen fliegt dabei von oben über den vorherigen Screen
-- Das Spielende wartet, bis die letzte Karte vollständig umgedreht ist
+- Exit popup with a confirmation (`<dialog>`) and its own entrance animation for each theme
+- Summary bar in the settings that shows the chosen options and animates when they change
+- Preview image in the settings that matches the theme (also while hovering over an option)
+- Hover effects in the settings: an option becomes bold and gets the line, the start button grows and its icon rotates (only when it is enabled)
+- Hover effects on the buttons
+- Automatic transition from "Game over" to the result; the winner or draw screen slides in from the top over the previous screen
+- The end of the game waits until the last card has been flipped completely
 
-Die Themes **Gaming** und **DA Projects** aus dem Design sind nicht umgesetzt (laut Aufgabe optional) und in den Settings nicht enthalten.
+The **Gaming** and **DA Projects** themes from the design are not implemented (they are optional) and are not part of the settings.
 
-## Projekt starten
+## Getting started
 
-Voraussetzung: [Node.js](https://nodejs.org) ist installiert.
+Requirement: [Node.js](https://nodejs.org) is installed.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Danach die angezeigte Adresse (meist `http://localhost:5173`) im Browser öffnen.
+Then open the shown address (usually `http://localhost:5173`) in the browser.
 
-### Für einen Server bauen
+### Build for a server
 
 ```bash
 npm run build -- --base=./
 ```
 
-Das erzeugt den Ordner `dist`. Dessen **Inhalt** (`index.html`, `favicon.svg`, `assets/`) wird auf den Server hochgeladen.
-Das `--base=./` sorgt dafür, dass alle Dateien relativ geladen werden und die Seite auch in einem Unterordner funktioniert.
+This creates the `dist` folder. Upload its **contents** (`index.html`, `favicon.svg`, `assets/`) to the server.
+The `--base=./` makes all files load with relative paths, so the page also works in a subfolder.
 
-## Projektstruktur
+## Project structure
 
 ```
-index.html            alle Screens als <section> (Home, Settings, Spielfeld, Game over, Winner, Draw)
-public/               Favicon
+index.html            all screens as <section> (home, settings, game, game over, winner, draw)
+public/               favicon
 src/
-  main.ts             Spiellogik und Verknüpfung aller Teile
-  card.ts             Karten und Spielfeld erzeugen
-  card-template.ts    HTML einer Karte
-  game-state.ts       Typen für den Spielstand
-  screens.ts          Screens ein- und ausblenden
-  settings.ts         Settings, Auswahl-Leiste und Start-Button
-  exit-popup.ts       Exit-Popup
-  themes.ts           Daten der Themes (Motive, Vorschau, Beschriftungen)
-  shuffle.ts          Karten mischen
-  assets/             Bilder, Schriften und Motive
+  main.ts             game logic and wiring of all parts
+  card.ts             create cards, the board and the card HTML
+  card-template.ts    HTML template of a single card
+  game-state.ts       types for the game state
+  screens.ts          show, hide and slide in screens
+  settings.ts         settings, summary bar and start button
+  exit-popup.ts       exit popup
+  themes.ts           theme data (motifs, preview, labels)
+  shuffle.ts          shuffle the cards
+  assets/             images, fonts and motifs
   styles/             SCSS (abstracts, base, themes)
 ```
 
-## Umsetzung
+## Implementation
 
-- Alle Screens liegen in einer Seite und werden über die Klasse `is-hidden` ein- und ausgeblendet.
-- Das Theme wird über das Attribut `data-theme` am `body` gesetzt. Die Theme-Styles stehen in `src/styles/themes/`.
-- Die Karten-Motive sind inline eingebundene SVGs.
-- Der Code folgt den Coding-Konventionen der Developer Akademie (kebab-case-Dateinamen, explizite Typen, TSDoc, benannte Konstanten, kurze Funktionen).
-- Das Design stammt von der Developer Akademie (Figma).
+- All screens live on one page and are shown and hidden with the class `is-hidden`.
+- The theme is set with the attribute `data-theme` on the `body`. The theme styles are located in `src/styles/themes/`.
+- The card motifs are inline SVGs.
+- The code follows the coding conventions of the Developer Akademie (kebab-case file names, explicit types, TSDoc, named constants, short functions).
+- The design is provided by the Developer Akademie (Figma).
